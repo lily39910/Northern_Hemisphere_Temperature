@@ -24,7 +24,7 @@ class PatchTSDataset(torch.utils.data.Dataset):
     self.patch_size = patch_size
     self.n_patch = n_patch
     self.n_token = n_token
-    self.window_size = int(patch_size * self.n_patch * n_token / 2)
+    self.window_size = int(patch_size * n_patch * n_token / 2)
     self.forecast_size = patch_size
     self.data = ts
 
