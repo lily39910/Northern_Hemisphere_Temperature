@@ -36,24 +36,23 @@ class ANNLoadData():
     
 
 class PatchLoadData():
-    def __init__(self, data:pd.DataFrame, patch_size:int, n_patch:int, n_token:int, tst_size:int , batch_size:int):
+    def __init__(self, data:pd.DataFrame, n_patch:int, patch_length:int, tst_size:int , batch_size:int):
         self.tst_size = tst_size
         self.data = data
         self.batch_size = batch_size
-        self.patch_size = patch_size
+        #self.patch_size = patch_size
         self.n_patch = n_patch
-        self.n_token = n_token
+        self.patch_length = patch_length
         self.scaler = MinMaxScaler()
 
     def scaling(self):
-        window_size = int(self.patch_size * self.n_patch * self.n_token / 2)
+        window_size = int(self.patch_length * self.n_patch/ 2)
 
-        
         trn_scaled = self.scaler.fit_transform(self.data[:-self.tst_size].to_numpy(dtype=np.float32)).flatten()
         tst_scaled = self.scaler.transform(self.data[-self.tst_size-window_size:].to_numpy(dtype=np.float32)).flatten()
 
-        trn_ds = PatchTSDataset(trn_scaled, self.patch_size, self.n_token, self.n_patch) #4, 6
-        tst_ds = PatchTSDataset(tst_scaled, self.patch_size, self.n_token, self.n_patch) #4, 6
+        trn_ds = PatchTSDataset(trn_scaled, self.patch_length, self.n_patch, self.tst_size) #4, 6
+        tst_ds = PatchTSDataset(tst_scaled,  self.patch_length, self.n_patch, self.tst_size) #4, 6
 
         trn_dl = torch.utils.data.DataLoader(trn_ds, batch_size=self.batch_size, shuffle=True)
         tst_dl = torch.utils.data.DataLoader(tst_ds, batch_size=self.tst_size, shuffle=False)
