@@ -20,23 +20,21 @@ class TimeSeriesDataset(torch.utils.data.Dataset):
   
 
 class PatchTSDataset(torch.utils.data.Dataset):
-  def __init__(self, ts:np.array, patch_size:int=4, n_token:int=6, n_patch:int=4) :
-    self.patch_size = patch_size
-    self.n_patch = n_patch
-    self.n_token = n_token
-    self.window_size = int(patch_size * n_patch * n_token / 2)
-    self.forecast_size = patch_size
+  def __init__(self, ts:np.array, patch_length:int=16, n_patches:int=6, prediction_length:int=4):
+    self.P = patch_length #16
+    self.N = n_patches
+    self.L = int(patch_length * n_patches / 2)  # look-back window length
+    self.T = prediction_length
     self.data = ts
 
   def __len__(self):
-    return len(self.data) - self.window_size - self.forecast_size + 1
+    return len(self.data) - self.L - self.T + 1
 
   def __getitem__(self, i):
-    look_back = self.data[i:(i+self.window_size)]
-    look_back = np.concatenate([look_back] + [look_back[-self.patch_size:]] * int(self.n_patch / 2))
-    x = np.array([look_back[i*int(self.patch_size*self.n_patch/2):(i+2)*int(self.patch_size*self.n_patch/2)] for i in range(self.n_token)])
-
-    y = self.data[(i+self.window_size):(i+self.window_size+self.forecast_size)]
+    look_back = self.data[i:(i+self.L)]
+    look_back = np.concatenate([look_back, look_back[-1]*np.ones(int(self.P / 2), dtype=np.float32)])  
+    x = np.array([look_back[i*int(self.P/2):(i+2)*int(self.P/2)] for i in range(self.N)])
+    y = self.data[(i+self.L):(i+self.L+self.T)]
     return x, y
   
 
