@@ -104,13 +104,15 @@ class StatelessLoadData():
         self.window_size = window_size
         self.scaler = MinMaxScaler()
         self.scaler_ra = MinMaxScaler()
+        self.tst_scaled = None
 
     def scaling(self):
         tst_size = self.tst_size
+
+        self.data['rolling_avg'] = self.data.Temperature.rolling(12).mean()
+        self.data = self.data.dropna()
+ 
         trn, tst = self.data[:-tst_size], self.data[-tst_size:]
-
-        
-
         trn_scaled, tst_scaled = trn.copy(), tst.copy()
 
         trn_scaled['Temperature'] = self.scaler.fit_transform(trn.Temperature.to_numpy(np.float32).reshape(-1,1))
@@ -124,6 +126,7 @@ class StatelessLoadData():
 
         trn_scaled = trn_scaled.to_numpy(np.float32)
         tst_scaled = tst_scaled.to_numpy(np.float32)
+        self.tst_scaled = tst_scaled
         #print(trn_scaled.shape, tst_scaled.shape)
 
         trn_ds = RnnLstmTimeSeriesDataset(trn_scaled, self.window_size, 1)
@@ -139,6 +142,10 @@ class StatelessLoadData():
 
     def get_scaler_ra(self):
         return self.scaler_ra
+    
+    def get_scaled(self):
+        return self.tst_scaled
+
     
 class MultiANNLoadData():
     def __init__(self, data:pd.DataFrame, lookback_size :int, forecast_size:int, tst_size:int, batch_size:int):
