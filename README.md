@@ -1,6 +1,10 @@
 # Northern_Hemisphere_Temperature
-(https://www.kaggle.com/datasets/antoniomartin/northern-hemisphere-monthly-temperature-1880-2022)
 
+## 데이터셋 출처
+### (https://www.kaggle.com/datasets/antoniomartin/northern-hemisphere-monthly-temperature-1880-2022)
+
+## 모델설명 ppt
+### (https://www.canva.com/design/DAF5cdjRJrE/bxy7mnaTv8QnUV3CryD4-A/edit)
 
 조원: (조장)편하늘, 김범찬, 임지혜, 전정현, 한상준
 
