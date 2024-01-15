@@ -36,7 +36,7 @@ class NetMulti(nn.Module):
     x = x.flatten(1)    # (B, d_in * c_in)
     x = self.lin1(x)    # (B, d_hidden)
     x = self.activation(x)
-    for _ in range(2):
+    for _ in range(1):
       x = self.lin2(x)    # (d_hidden, d_hidden)
       x = self.activation(x)
     x = self.lin3(x).reshape(-1, self.d_out, self.c_in)    # (B, d_out, c_in)
