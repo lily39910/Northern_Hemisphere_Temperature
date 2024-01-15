@@ -19,7 +19,7 @@ def main(cfg, args):
   data['YearMonth'] = pd.to_datetime(data['YearMonth']) 
 
   if 'Multi' == args.model:
-    data['rolling_mean'] = data['Temperature'].rolling(12).mean()
+    data['rolling_mean'] = data.rolling(12).mean()
     data['diff1'] = data['Temperature'].diff(1)
     data['rolling_mean4'] = data['Temperature'].rolling(4).mean()
     data = data.dropna()
